@@ -1,9 +1,13 @@
 package com.dale.projeto.service;
 
+import com.dale.projeto.exception.CustomException;
 import com.dale.projeto.interfaces.PedidoRepository;
 import com.dale.projeto.model.Pedido;
+import com.dale.projeto.model.PedidoItem;
 import com.dale.projeto.model.QPedido;
+import com.dale.projeto.model.dto.DescontoDTO;
 import com.dale.projeto.model.enums.PedidoStatus;
+import com.dale.projeto.service.validate.PedidoItemValidate;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,9 +21,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,6 +38,9 @@ public class PedidoService {
 
     @Autowired
     PedidoItemService pedidoItemService;
+
+    @Autowired
+    PedidoItemValidate validateServices;
 
     @Autowired
     private JPAQueryFactory queryFactory;
@@ -75,20 +83,16 @@ public class PedidoService {
     }
 
     @Transactional
-    public UUID atualizar(UUID id, Pedido pedido) {
+    public Pedido atualizar(UUID id, Pedido pedido) {
         Pedido pedidoSaved = queryFactory.selectFrom(qPedido)
                 .where(qPedido.id.eq(id))
                 .fetchOne();
 
-        pedidoSaved.setData(pedido.getData());
-        pedidoSaved.setDescricao(pedido.getDescricao());
-        pedidoSaved.setDesconto(pedido.getDesconto());
-        pedidoSaved.setStatus(pedido.getStatus());
-        pedidoSaved.setValorTotal(pedido.getValorTotal());
-
-        repository.save(pedidoSaved);
-
-        return pedidoSaved.getId();
+        if(Objects.nonNull(pedidoSaved)) {
+           return repository.save(merge(pedidoSaved, pedido));
+        } else {
+            throw new CustomException("Pedido não foi encontrado");
+        }
     }
 
     @Transactional
@@ -97,5 +101,28 @@ public class PedidoService {
         queryFactory.delete(qPedido)
                 .where(qPedido.id.eq(id))
                 .execute();
+    }
+
+    @Transactional
+    public void aplicarDesconto(DescontoDTO dto) {
+
+        Pedido pedido = queryFactory.selectFrom(qPedido)
+                .where(qPedido.id.eq(dto.getIdPedido()))
+                .fetchOne();
+
+        if(Objects.nonNull(pedido) && PedidoStatus.ABERTO.equals(pedido.getStatus())) {
+            BigDecimal desconto = BigDecimal.valueOf(dto.getPorcentagem()).divide(BigDecimal.valueOf(100));
+            pedidoItemService.aplicarDesconto(dto.getIdPedido(), desconto);
+        }
+    }
+
+    private Pedido merge(Pedido saved, Pedido update) {
+        Optional.ofNullable(update.getData()).ifPresent(saved::setData);
+        Optional.ofNullable(update.getDescricao()).ifPresent(saved::setDescricao);
+        Optional.ofNullable(update.getDesconto()).ifPresent(saved::setDesconto);
+        Optional.ofNullable(update.getStatus()).ifPresent(saved::setStatus);
+        Optional.ofNullable(update.getValorTotal()).ifPresent(saved::setValorTotal);
+
+        return saved;
     }
 }

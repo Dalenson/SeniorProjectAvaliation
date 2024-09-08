@@ -16,12 +16,10 @@ public class PedidoItem {
 
     @ManyToOne
     @JoinColumn(name = "pedido_id", nullable = false)
-    @JsonBackReference
     private Pedido pedido;
 
     @ManyToOne
     @JoinColumn(name = "produto_servico_id", nullable = false)
-    @JsonBackReference
     private ProdutoServico produtoServico;
 
     private Integer quantidade;

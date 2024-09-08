@@ -1,17 +1,19 @@
 package com.dale.projeto.controller;
 
 import com.dale.projeto.model.Pedido;
+import com.dale.projeto.model.dto.DescontoDTO;
 import com.dale.projeto.service.PedidoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/pedido")
+@Tag(name = "Pedido", description = "Gerencia os pedidos.")
 public class PedidoResource {
 
     @Autowired
@@ -32,12 +34,18 @@ public class PedidoResource {
     }
 
     @PostMapping
-    public ResponseEntity<UUID> gravar(@RequestBody Pedido produtoServico) {
-        return ResponseEntity.ok(service.gravar(produtoServico).getId());
+    public ResponseEntity<UUID> gravar(@RequestBody Pedido pedido) {
+        return ResponseEntity.ok(service.gravar(pedido).getId());
+    }
+
+    @PostMapping("/aplicar-desconto")
+    public ResponseEntity aplicarDesconto(@RequestBody DescontoDTO descontoDTO) {
+        service.aplicarDesconto(descontoDTO);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UUID> atualizar(@PathVariable("id") UUID id, @RequestBody Pedido pedido) {
+    public ResponseEntity<Pedido> atualizar(@PathVariable("id") UUID id, @RequestBody Pedido pedido) {
         return ResponseEntity.ok(service.atualizar(id, pedido));
     }
 

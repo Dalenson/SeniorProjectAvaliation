@@ -27,10 +27,6 @@ public class Pedido {
 
     BigDecimal valorTotal;
 
-    @OneToMany(mappedBy = "pedido")
-    @JsonIgnore
-    private List<PedidoItem> pedidoItens;
-
     @PrePersist
     public void prePersist() {
         if (id == null) {
@@ -84,13 +80,5 @@ public class Pedido {
 
     public void setValorTotal(BigDecimal valorTotal) {
         this.valorTotal = valorTotal;
-    }
-
-    public List<PedidoItem> getPedidoItens() {
-        return pedidoItens;
-    }
-
-    public void setPedidoItens(List<PedidoItem> pedidoItens) {
-        this.pedidoItens = pedidoItens;
     }
 }
