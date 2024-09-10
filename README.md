@@ -27,6 +27,15 @@ Para garantir que o projeto está funcionando corretamente, você pode executar 
 mvn test
 ```
 
+### 4. Documentação com Swagger
+A documentação da API é fornecida pelo Swagger, que permite explorar e testar os endpoints da API diretamente no navegador. 
+
+Para acessar a documentação do Swagger, execute o projeto e abra o seguinte URL em seu navegador:
+```bash
+http://localhost:8080/documentacao.html
+```
+Nesta interface, você pode visualizar todos os endpoints disponíveis, suas descrições, e testar as requisições diretamente.
+
 ## Funcionalidades do Projeto
 
 ### 1. Cadastro de Produtos/Serviços
