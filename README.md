@@ -2,8 +2,8 @@
 
 ## Requisitos
 Antes de começar, certifique-se de ter os seguintes softwares instalados:
-- [Java 8+](https://www.oracle.com/java/technologies/javase-downloads.html)
-- [Maven](https://maven.apache.org/install.html)
+- [Java 17+](https://www.oracle.com/java/technologies/javase-downloads.html)
+- [Maven 3.8.8](https://maven.apache.org/install.html)
 - [PostgreSQL](https://www.postgresql.org/download/)
 
 ## Configuração do Ambiente
@@ -12,6 +12,13 @@ Antes de começar, certifique-se de ter os seguintes softwares instalados:
 Primeiro, você precisará clonar este repositório. Execute o seguinte comando no terminal:
 ```bash
 git clone https://github.com/Dalenson/SeniorProjectAvaliation.git
+```
+
+### 2. Criando Banco Postgrees
+Com postgree instalado e configurado executar:
+```bash
+CREATE DATABASE seu_banco;
+GRANT ALL PRIVILEGES ON DATABASE banco TO seu_usuario;
 ```
 
 ### 2. Compilando e Executando o Projeto
