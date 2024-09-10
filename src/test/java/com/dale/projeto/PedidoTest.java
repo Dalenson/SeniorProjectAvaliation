@@ -4,6 +4,9 @@ import com.dale.projeto.exception.CustomException;
 import com.dale.projeto.interfaces.PedidoRepository;
 import com.dale.projeto.model.Pedido;
 import com.dale.projeto.model.QPedido;
+import com.dale.projeto.model.dto.DescontoDTO;
+import com.dale.projeto.model.enums.PedidoStatus;
+import com.dale.projeto.service.PedidoItemService;
 import com.dale.projeto.service.PedidoService;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -17,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -44,45 +48,45 @@ public class PedidoTest {
     @Mock
     private PedidoRepository repository;
 
+    @Mock
+    private PedidoItemService pedidoItemService;
+
+    private static final QPedido qPedido = QPedido.pedido;
+
     @Test
     public void buscarTodos() {
-        // Dados de entrada
-        Integer page = 0;
-        Integer limit = 10;
+        int page = 0;
+        int limit = 10;
         String descricao = "descricao";
         String status = "ABERTO";
 
-        // Dados esperados
         Pedido pedido = new Pedido();
         List<Pedido> pedidos = Collections.singletonList(pedido);
         Pageable pageable = PageRequest.of(page, limit);
 
-        // Mocking
-        when(queryFactory.selectFrom(QPedido.pedido)).thenReturn(query);
-//        when(query.where(any())).thenReturn(query);
-//        when(query.offset(pageable.getOffset())).thenReturn(query);
-//        when(query.limit(pageable.getPageSize())).thenReturn(query);
-//        when(query.fetch()).thenReturn(pedidos);
-//
-//        when(queryFactory.selectFrom(QPedido.pedido)).thenReturn(query);
-//        when(query.fetch()).thenReturn(pedidos);
-//
-//        long total = pedidos.size();
-//        when(queryFactory.selectFrom(QPedido.pedido)).thenReturn(query);
-//        when(query.fetch()).thenReturn(pedidos);
+        when(queryFactory.selectFrom(qPedido)).thenReturn(query);
+        when(query.where(any(Predicate.class))).thenReturn(query);
+        when(query.offset(pageable.getOffset())).thenReturn(query);
+        when(query.limit(pageable.getPageSize())).thenReturn(query);
+        when(query.fetch()).thenReturn(pedidos);
 
-        // Chamada ao método
+        when(queryFactory.selectFrom(qPedido)).thenReturn(query);
+        when(query.fetch()).thenReturn(pedidos);
+
+        long total = pedidos.size();
+        when(queryFactory.selectFrom(qPedido)).thenReturn(query);
+        when(query.fetch()).thenReturn(pedidos);
+
         Page<Pedido> resultado = service.buscarTodos(page, limit, descricao, status);
 
-//        // Verificações
-//        assertEquals(pedidos, resultado.getContent());
-//        assertEquals(total, resultado.getTotalElements());
-//        assertEquals(pageable, resultado.getPageable());
-//        verify(queryFactory, times(2)).selectFrom(QPedido.pedido);
-////        verify(query, times(1)).where(any(BooleanBuilder.class));
-//        verify(query, times(1)).offset(pageable.getOffset());
-//        verify(query, times(1)).limit(pageable.getPageSize());
-//        verify(query, times(1)).fetch();
+        assertEquals(pedidos, resultado.getContent());
+        assertEquals(total, resultado.getTotalElements());
+        assertEquals(pageable, resultado.getPageable());
+        verify(queryFactory, times(2)).selectFrom(qPedido);
+        verify(query, times(1)).where(any(Predicate.class));
+        verify(query, times(1)).offset(pageable.getOffset());
+        verify(query, times(1)).limit(pageable.getPageSize());
+        verify(query, times(2)).fetch();
     }
 
     @Test
@@ -111,7 +115,6 @@ public class PedidoTest {
     public void atualizarThrow() {
         UUID id = UUID.randomUUID();
         Pedido pedido = new Pedido();
-        Pedido pedidoSaved = new Pedido();
 
         when(queryFactory.selectFrom(any(QPedido.class))).thenReturn(query);
 
@@ -126,4 +129,45 @@ public class PedidoTest {
         }
 
     }
+
+    @Test
+    public void aplicarDesconto() {
+        DescontoDTO dto = new DescontoDTO();
+        dto.setPorcentagem(10L);
+        dto.setIdPedido(UUID.randomUUID());
+
+        Pedido pedidoSaved = new Pedido();
+
+        pedidoSaved.setStatus(PedidoStatus.ABERTO);
+
+        when(queryFactory.selectFrom(any(QPedido.class))).thenReturn(query);
+        when(query.where(any(Predicate.class))).thenReturn(query);
+        when(query.fetchOne()).thenReturn(pedidoSaved);
+
+        service.aplicarDesconto(dto);
+
+        BigDecimal descontoEsperado = BigDecimal.valueOf(0.1);
+        verify(pedidoItemService, times(1)).aplicarDesconto(dto.getIdPedido(), descontoEsperado);
+        verify(queryFactory, times(1)).selectFrom(qPedido);
+    }
+
+    @Test
+    public void aplicarDesconto_pedidoNaoEncontrado() {
+        DescontoDTO dto = new DescontoDTO();
+        dto.setPorcentagem(10L);
+        dto.setIdPedido(UUID.randomUUID());
+
+        Pedido pedidoSaved = new Pedido();
+
+        pedidoSaved.setStatus(PedidoStatus.FECHADO);
+
+        when(queryFactory.selectFrom(any(QPedido.class))).thenReturn(query);
+        when(query.where(any(Predicate.class))).thenReturn(query);
+        when(query.fetchOne()).thenReturn(pedidoSaved);
+
+        service.aplicarDesconto(dto);
+        verify(pedidoItemService, never()).aplicarDesconto(any(UUID.class), any(BigDecimal.class));
+
+    }
+
 }

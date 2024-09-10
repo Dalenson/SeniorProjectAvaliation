@@ -2,10 +2,9 @@ package com.dale.projeto.service;
 
 import com.dale.projeto.exception.CustomException;
 import com.dale.projeto.interfaces.PedidoItemRepository;
-import com.dale.projeto.model.*;
+import com.dale.projeto.model.PedidoItem;
+import com.dale.projeto.model.QPedidoItem;
 import com.dale.projeto.model.enums.TipoEnum;
-import com.dale.projeto.service.validate.PedidoItemValidate;
-import com.dale.projeto.service.validate.PedidoValidate;
 import com.dale.projeto.service.validate.ProdutoServicoValidate;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -40,7 +39,9 @@ public class PedidoItemService {
 
     public final ProdutoServicoValidate produtoServicoValidate;
 
-    public PedidoItemService (ProdutoServicoValidate produtoServicoValidate) {
+    public PedidoItemService (PedidoItemRepository repository, JPAQueryFactory queryFactory, ProdutoServicoValidate produtoServicoValidate) {
+        this.repository = repository;
+        this.queryFactory = queryFactory;
         this.produtoServicoValidate = produtoServicoValidate;
     }
 

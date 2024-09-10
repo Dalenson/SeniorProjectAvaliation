@@ -3,7 +3,6 @@ package com.dale.projeto.service;
 import com.dale.projeto.exception.CustomException;
 import com.dale.projeto.interfaces.PedidoRepository;
 import com.dale.projeto.model.Pedido;
-import com.dale.projeto.model.PedidoItem;
 import com.dale.projeto.model.QPedido;
 import com.dale.projeto.model.dto.DescontoDTO;
 import com.dale.projeto.model.enums.PedidoStatus;
@@ -67,7 +66,8 @@ public class PedidoService {
                 .limit(pageable.getPageSize())
                 .fetch();
         long total = queryFactory.selectFrom(qPedido)
-                .fetch().size();
+                .fetch()
+                .size();
 
         return new PageImpl<>(pedidos, pageable, total);
     }
