@@ -24,20 +24,23 @@ CREATE DATABASE banco;
 GRANT ALL PRIVILEGES ON DATABASE banco TO seu_usuario;
 ```
 
-### 2. Compilando e Executando o Projeto
+### 2.1 Ajustando variaveis de ambiente do banco
+Acessar arquivo ```application.properties``` e ajustar as variaveis username e password conforme configuradas no banco de dados do postgrees.
+
+### 3. Compilando e Executando o Projeto
 Dentro da pasta do projeto, compile e execute o projeto com Maven:
 ```bash
 mvn clean install
 mvn spring-boot:run
 ```
 
-### 3. Executando os Testes
+### 4. Executando os Testes
 Para garantir que o projeto está funcionando corretamente, você pode executar os testes com o seguinte comando:
 ```bash
 mvn test
 ```
 
-### 4. Documentação com Swagger
+### 5. Documentação com Swagger
 A documentação da API é fornecida pelo Swagger, que permite explorar e testar os endpoints da API diretamente no navegador. 
 
 Para acessar a documentação do Swagger, execute o projeto e abra o seguinte URL em seu navegador:
