@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/pedido")
+@RequestMapping("/pedidos")
 @Tag(name = "Pedido", description = "Gerencia os pedidos.")
 public class PedidoResource {
 
