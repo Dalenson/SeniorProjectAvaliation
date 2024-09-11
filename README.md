@@ -1,5 +1,8 @@
 # Documentação do Projeto
 
+[Obs do projeto]: Não foram implementados todos os testes unitários, apenas alguns para agilizar o tempo de execução do projeto. Caso necessário a documentação dos end-points detalhados está no swagger. 
+Foi implementado o nivel 3.
+
 ## Requisitos
 Antes de começar, certifique-se de ter os seguintes softwares instalados:
 - [Java 17+](https://www.oracle.com/java/technologies/javase-downloads.html)
