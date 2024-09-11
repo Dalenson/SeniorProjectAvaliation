@@ -17,7 +17,7 @@ git clone https://github.com/Dalenson/SeniorProjectAvaliation.git
 ### 2. Criando Banco Postgrees
 Com postgree instalado e configurado executar:
 ```bash
-CREATE DATABASE seu_banco;
+CREATE DATABASE banco;
 GRANT ALL PRIVILEGES ON DATABASE banco TO seu_usuario;
 ```
 
