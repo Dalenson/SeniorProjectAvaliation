@@ -59,16 +59,24 @@ Este sistema permite o cadastro de produtos e serviços com as seguintes funcion
 O sistema expõe uma API RESTful com os seguintes endpoints principais:
 
 - **Produtos/Serviços**:
-  - `GET /produtos`: Lista todos os produtos/serviços.
-  - `POST /produtos`: Cria um novo produto/serviço.
-  - `PUT /produtos/{id}`: Atualiza um produto/serviço existente.
-  - `DELETE /produtos/{id}`: Exclui um produto/serviço.
+  - `GET /produto-servico`: Lista todos os produtos/serviços.
+  - `POST /produto-servico`: Cria um novo produto/serviço.
+  - `PUT /produto-servico/{id}`: Atualiza um produto/serviço existente.
+  - `DELETE /produto-servico/{id}`: Exclui um produto/serviço.
 
 - **Pedidos**:
   - `GET /pedidos`: Lista todos os pedidos.
+  - `GET /pedidos/{id}`: Lista um pedido existente.
   - `POST /pedidos`: Cria um novo pedido.
+  - `POST /pedidos/aplicar-desconto`: Aplica um desconto ao pedido.
   - `PUT /pedidos/{id}`: Atualiza um pedido existente.
   - `DELETE /pedidos/{id}`: Exclui um pedido.
+    
+- **Itens do Pedido**:
+  - `GET /pedido-item`: Lista todos os itens do pedido.
+  - `POST /pedido-item`: Cria um novo item no pedido.
+  - `PUT /pedido-item/{id}`: Atualiza um item no pedido.
+  - `DELETE /pedido-item/{id}`: Exclui um item no pedido.
 
 ## Executando em Ambiente de Produção
 Para rodar o projeto em ambiente de produção, utilize o seguinte comando para gerar o JAR:
